@@ -65,8 +65,10 @@ class DunitCommand extends Command
     /** The array key for the terminal height */
     const DIMENSION_HEIGHT = 1;
 
+    const DOCKER_COMMAND_CREATE_DUMMY = 'docker create -v /opt/source --name dummy_"%s" %s /bin/true';
+    const DOCKER_COMMAND_COPY_TO_DUMMY = 'docker cp $(pwd)/. dummy_"%s" /opt/source';
     /** The format of the docker command that we execute */
-    const DOCKER_COMMAND_FORMAT = 'docker run -t -v $(pwd):/opt/source -w /opt/source %s /bin/bash -c " stty columns %d && %s "';
+    const DOCKER_COMMAND_FORMAT = 'docker run -t -w /opt/source --volumes-from dummy_"%s" %s /bin/bash -c " stty columns %d && %s "';
 
     /** The format of the docker pull command for updating images */
     const DOCKER_COMMAND_PULL = 'docker pull %s';
@@ -164,6 +166,14 @@ class DunitCommand extends Command
             if ($options[self::OPTIONS_KEY_PULL]) {
                 passthru(sprintf(
                     self::DOCKER_COMMAND_PULL,
+                    escapeshellarg($image)
+                ));
+                passthru(sprintf(
+                    self::DOCKER_COMMAND_CREATE_DUMMY,
+                    escapeshellarg($image)
+                ));
+                passthru(sprintf(
+                    self::DOCKER_COMMAND_COPY_TO_DUMMY,
                     escapeshellarg($image)
                 ));
                 continue;
