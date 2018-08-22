@@ -1,5 +1,5 @@
 {
-    "name": "vectorface/dunit",
+    "name": "WOVNio/dunit",
     "description": "Test code against multiple versions of PHP with the help of docker",
     "keywords": [
         "Docker", "PHPUnit", "PHP", "Testing"
